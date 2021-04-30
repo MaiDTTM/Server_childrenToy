@@ -1,11 +1,3 @@
-/**
- * Copyright 2020 present, Lê Văn Mong.
- * All rights reserved.
- * @author Mongker on 04/10/2020
- * @email: levanmong.dola.99@gmail.com
- * @student-code: 68DCHT20091
- * @university: UTT (Đại học Công Nghệ Giao Thông Vận Tải)
- */
 const express = require('express');
 const uploadRouter = express.Router();
 const multer = require('multer');

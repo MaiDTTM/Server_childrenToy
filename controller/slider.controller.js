@@ -1,4 +1,3 @@
-
 // model
 const Slider = require('../model/slider.model');
 

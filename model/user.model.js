@@ -1,48 +1,64 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Boolean = mongoose.Schema.Types.Boolean;
+// const Number = mongoose.Schema.Types.N;
 // Define collection and schema for Business
 let User = new Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-      default: '',
+    {
+        name: {
+            type: String,
+            required: true,
+            default: '',
+        },
+        email: {
+            type: String,
+            required: true,
+            default: '',
+        },
+        phone: {
+            type: String,
+            required: true,
+            default: '',
+        },
+        gender: {
+            type: Number,
+            default: 0,
+        },
+        date_of_birth: {
+            type: String,
+            default: '',
+        },
+        address: {
+            type: String,
+            default: '',
+        },
+        password: {
+            type: String,
+            required: true,
+            default: '',
+        },
+        image: {
+            type: String,
+            default: '',
+        },
+        status: {
+            type: String,
+            default: '1',
+        },
+        update_created: {
+            type: Date,
+            required: true,
+            default: new Date().getTime(),
+        },
+        created: {
+            type: Date,
+            required: true,
+            default: new Date().getTime(),
+        },
     },
-    email: {
-      type: String,
-      required: true,
-      default: '',
+    {
+        collection: 'user',
     },
-    phone: {
-      type: String,
-      required: true,
-      default: '',
-    },
-    rank: {
-      type: String,
-      required: true,
-      default: '0',
-    },
-    password: {
-      type: String,
-      required: true,
-      default: '',
-    },
-    address: {
-      type: String,
-      require: true,
-      default: '',
-    },
-    created: {
-      type: Date,
-      required: true,
-      default: new Date().getTime(),
-    },
-  },
-  {
-    collection: 'user',
-  },
 );
 
 module.exports = mongoose.model('User', User);

@@ -3,73 +3,31 @@ const Product = require('../model/product.model');
 
 module.exports = {
     GET: async function (req, res) {
-        await Product.find(function (err, data) {
-            if (err) return res.status(404).json({ message: err });
-            else {
-                const objectData = {};
-                data.map((item) => {
-                    objectData[item._id] = item;
-                });
-                return res.status(200).json(objectData);
-            }
-        });
-    },
-    POST: async function (req, res) {
-        console.log(req.body);
-        const data = { ...req.body };
-        const dataJson = {
-            itemIds: ['root'],
-            items: {
-                root: {
-                    date: new Date(),
-                    amount: data.amount,
-                },
-            },
-            total: data.amount,
-        };
-        data.history_amount = dataJson;
-        // req.body.created = now;
-        const product = await Product(data)
-            .save()
-            .then((product) => {
-                res.json({ message: 'SUCCESS' });
-            })
-            .catch((err) => {
-                res.status(500).json({ message: 'error' });
-            });
-    },
-    DELETE: async function (req, res) {
-        await Product.findByIdAndRemove({ _id: req.params.id }, function (err, Product) {
-            if (err) res.json(err);
-            else res.json({ message: 'SUCCESS' });
-        });
-    },
-    UPDATE: async function (req, res) {
-        console.log(req.params.id);
-        await Product.findById(req.params.id, function (err, Product) {
-            if (!Product) res.status(404).send('data is not found');
-            else {
-                Product.name = req.body.name;
-                Product.catalog_id = req.body.catalog_id;
-                Product.description = req.body.description;
-                Product.amount = req.body.amount;
-                Product.image_link = req.body.image_link;
-                Product.price = req.body.price;
-                Product.price_ceo = req.body.price_ceo;
-                (req.body.hasProducts) && (Product.hasProducts = req.body.hasProducts);
-                (req.body.history_amount !== 0) && (Product.history_amount = req.body.history_amount);
-                Product.save()
-                    .then((business) => {
-                        res.status(200).json({ message: 'SUCCESS' });
-                    })
-                    .catch((err) => {
-                        res.status(400).send({ message: 'Failed to update Product' });
+        if (req.query && Object.keys(req.query).length > 0) {
+            await Product.find(req.query, function (err, data) {
+                if (err) return res.status(404).json({ message: err });
+                else {
+                    const objectData = {};
+                    data.map((item) => {
+                        objectData[item._id] = item;
                     });
-            }
-        });
+                    return res.status(200).json(objectData);
+                }
+            });
+        } else {
+            await Product.find(function (err, data) {
+                if (err) return res.status(404).json({ message: err });
+                else {
+                    const objectData = {};
+                    data.map((item) => {
+                        objectData[item._id] = item;
+                    });
+                    return res.status(200).json(objectData);
+                }
+            });
+        }
     },
-    GET_ID_CATALOG: async function (req, res) {
-        console.log(req.params.id);
+    GET_PRODUCT_IN_THE_CATEGORY: async function (req, res) {
         await Product.find({ catalog_id: req.params.id }, function (err, product) {
             if (err) return res.status(404).json({ message: err });
             else {
@@ -78,6 +36,91 @@ module.exports = {
                     objectData[item._id] = item;
                 });
                 return res.status(200).json(objectData);
+            }
+        });
+    },
+    POST: async function (req, res) {
+        await Product.find({ name: req.body.name }, function (err, data) {
+            if (err) return res.status(404).json({ message: err });
+            else if (data.length >= 1) {
+                return res.json({ message: 'Sản phẩm đã tồn tại!' });
+            } else if (data.length === 0) {
+                return Product(req.body)
+                    .save()
+                    .then((product) => {
+                        res.status(200).json({ message: 'Thêm sản phẩm thành công!', id: product._id });
+                    })
+                    .catch((err) => {
+                        res.status(404).json({ message: err });
+                    });
+            }
+        });
+    },
+    DELETE: async function (req, res) {
+        await Product.findByIdAndRemove({ _id: req.params.id }, function (err, Product) {
+            if (err) res.json(err);
+            else res.json({ message: 'SUCCESS' });
+        });
+    },
+    UPDATE: async function (req, res) {
+        let productId = req.params.id;
+        await Product.findById(productId, function (err, response) {
+            if (!response) res.status(404).json({ message: 'Không tìm thấy dữ liệu!' });
+            else {
+                if (req.body.name === response.name) {
+                    response.catalog_id = req.body.catalog_id;
+                    response.name = req.body.name;
+                    response.price = req.body.price;
+                    response.amount = req.body.amount;
+                    response.status = req.body.status;
+                    response.product_detail = req.body.product_detail;
+                    response.description = req.body.description;
+                    response.comment = req.body.comment;
+                    response.price_seo = req.body.price_seo;
+                    response.image = req.body.image;
+                    response.image_destination = req.body.image_destination;
+                    response.view_user = req.body.view_user;
+                    response.vote_user = req.body.vote_user;
+                    response.sold = req.body.sold;
+                    return response
+                        .save()
+                        .then((business) => {
+                            res.status(200).json({ message: 'Sửa thông tin sản phẩm thành công !' });
+                        })
+                        .catch((err) => {
+                            res.status(400).send({ message: 'Không cập nhật được sản phẩm' });
+                        });
+                } else if (req.body.name !== response.name) {
+                    Product.find({ name: req.body.name }, function (err, data) {
+                        if (err) return res.status(404).json({ message: err });
+                        else if (data.length >= 1) {
+                            return res.json({ message: 'Trùng tên với 1 Sản phẩm khác đã tồn tại. Xin mời nhập tên khác để cập nhật!' });
+                        } else if (data.length === 0) {
+                            response.catalog_id = req.body.catalog_id;
+                            response.name = req.body.name;
+                            response.price = req.body.price;
+                            response.amount = req.body.amount;
+                            response.status = req.body.status;
+                            response.product_detail = req.body.product_detail;
+                            response.description = req.body.description;
+                            response.comment = req.body.comment;
+                            response.price_seo = req.body.price_seo;
+                            response.image = req.body.image;
+                            response.image_destination = req.body.image_destination;
+                            response.view_user = req.body.view_user;
+                            response.vote_user = req.body.vote_user;
+                            response.sold = req.body.sold;
+                            return response
+                                .save()
+                                .then((business) => {
+                                    res.status(200).json({ message: 'Sửa thông tin sản phẩm thành công !' });
+                                })
+                                .catch((err) => {
+                                    res.status(400).send({ message: 'Không cập nhật được sản phẩm' });
+                                });
+                        }
+                    });
+                }
             }
         });
     },

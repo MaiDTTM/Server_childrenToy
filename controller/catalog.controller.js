@@ -24,7 +24,7 @@ module.exports = {
                 return Catalog(req.body)
                     .save()
                     .then((catalog) => {
-                        res.status(200).json({ message: 'Thêm danh mục thành công!', id: catalog._id});
+                        res.status(200).json({ message: 'Thêm danh mục thành công!', data: catalog });
                     })
                     .catch((err) => {
                         res.status(404).json({ message: err });

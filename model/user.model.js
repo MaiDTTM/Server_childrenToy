@@ -42,8 +42,8 @@ let User = new Schema(
             default: '',
         },
         status: {
-            type: String,
-            default: '1',
+            type: Boolean,
+            default: true,
         },
         update_created: {
             type: Date,

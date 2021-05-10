@@ -53,34 +53,39 @@ const CheckUseOfAdmin = async (req, res, transaction) => {
         }
     }
 };
-const UpdateData = (transaction, res) => {
-    transaction
-        .save()
-        .then((business) => {
-            res.status(200).json({ message: 'SUCCESS', transaction: business });
-        })
-        .catch((err) => {
-            res.status(200).send({ message: 'Failed to update catalog' });
-        });
-};
 module.exports = {
     GET: async function (req, res) {
-        await Transaction.find(function (err, data) {
-            if (err) return res.status(404).json({ message: err });
-            else {
-                const objectData = {};
-                data.map((item) => {
-                    objectData[item._id] = item;
-                });
-                return res.status(200).json(objectData);
-            }
-        });
+        console.log('req.query', req.query); // MongLV log fix bug
+        if (req.query && Object.keys(req.query).length > 0) {
+            await Transaction.find(req.query, function (err, data) {
+                console.log('data', data); // MongLV log fix bug
+                if (err) return res.status(404).json({ message: err });
+                else {
+                    const objectData = {};
+                    data.map((item) => {
+                        objectData[item._id] = item;
+                    });
+                    return res.status(200).json(objectData);
+                }
+            });
+        } else {
+            await Transaction.find(function (err, data) {
+                if (err) return res.status(404).json({ message: err });
+                else {
+                    const objectData = {};
+                    data.map((item) => {
+                        objectData[item._id] = item;
+                    });
+                    return res.status(200).json(objectData);
+                }
+            });
+        }
     },
     POST: async function (req, res) {
         Transaction(req.body)
             .save()
             .then((transaction) => {
-                res.json({ message: 'SUCCESS', transaction: Transaction });
+                res.json({ message: 'SUCCESS', data: transaction });
             })
             .catch((err) => {
                 res.status(200).json({ message: err });

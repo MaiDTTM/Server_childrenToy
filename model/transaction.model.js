@@ -30,7 +30,6 @@ let TransactionModel = new Schema(
         // ghi chu don hang
         message: {
             type: String,
-            required: true,
             default: '',
         },
         // số điện thoại đặt hàng

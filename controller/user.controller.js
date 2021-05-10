@@ -1,6 +1,8 @@
 // model
 const User = require('../model/user.model');
 async function checkUpdate(req, res, data) {
+    console.log('req.body.status', req.body.status); // MongLV log fix bug
+    console.log('req.body.password', req.body.password); // MongLV log fix bug
     let number = 0;
     data.name !== req.body.name
         ? await User.find({ name: req.body.name }, function (err, user) {
@@ -149,5 +151,32 @@ module.exports = {
                 }
             });
         }
+    },
+    PUT: async function (req, res) {
+        await User.findById(req.params.id, function (err, user) {
+            if (!user) res.status(404).send('data is not found');
+            else {
+                if (!req.body.password) {
+                    req.body.status && (user.status = req.body.status);
+                    user.save()
+                        .then((business) => {
+                            res.json({ message: 'SUCCESS', user: business });
+                        })
+                        .catch((err) => {
+                            res.status(400).send({ message: 'Cập tài khoản thất bại !' });
+                        });
+                } else {
+                    req.body.password && (user.password = req.body.password);
+                    req.body.status && (user.status = req.body.status);
+                    user.save()
+                        .then((business) => {
+                            res.json({ message: 'SUCCESS', user: business });
+                        })
+                        .catch((err) => {
+                            res.status(400).send({ message: 'Cập tài khoản thất bại !' });
+                        });
+                }
+            }
+        });
     },
 };

@@ -64,20 +64,16 @@ module.exports = {
         });
     },
     UPDATE: async function (req, res) {
-        await Cart.findById(req.params.id, function (err, Cart) {
-            console.log('Mong' + req.params.id);
-            if (!Cart) res.status(404).send('data is not found');
+        await Cart.findById({ _id: req.params.id }, function (err, cart) {
+            if (!cart) res.status(404).send('data is not found');
             else {
-                // console.log('mong');
-                console.log('--------------------------------------');
                 // console.log(req);
-                req.body.amount && (Cart.amount = req.body.amount);
+                req.body.amount && (cart.amount = req.body.amount);
                 // console.log(req.body.status);
-                Cart.status = req.body.status;
-                // console.log(Cart);
-                Cart.save()
+                req.body.status && (cart.status = req.body.status);
+                cart.save()
                     .then((business) => {
-                        res.json({ message: 'SUCCESS' });
+                        res.json({ message: 'SUCCESS', data: business });
                     })
                     .catch((err) => {
                         res.status(400).send({ message: 'Failed to update Product' });

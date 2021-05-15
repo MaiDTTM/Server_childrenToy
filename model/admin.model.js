@@ -19,14 +19,22 @@ let Admin = new Schema(
             required: true,
             default: '',
         },
-        info: {
+        address: {
             type: String,
-            default: '{}',
+            default: '',
         },
+        gender: {
+            type: String,
+            default: '',
+        },
+        // info: {
+        //     type: String,
+        //     default: '{}',
+        // },
         password: {
             type: String,
             required: true,
-            default: '',
+            default: '12345@2121',
         },
         date_of_birth: {
             type: String,
@@ -39,7 +47,6 @@ let Admin = new Schema(
         },
         status: {
             type: Boolean,
-            require: true,
             default: true,
         },
         avatar: {

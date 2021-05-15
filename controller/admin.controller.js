@@ -1,6 +1,57 @@
 // model
 const Admin = require('../model/admin.model');
-
+async function checkUpdate(req, res, data) {
+    let number = 0;
+    // data.name !== req.body.name
+    //     ? await Admin.find({ name: req.body.name }, function (err, admin) {
+    //           if (err) return res.status(404).json({ message: err });
+    //           else if (admin && admin.length === 1) {
+    //               return res.status(200).json({ message: 'Tên đã được đăng ký !' });
+    //           } else {
+    //               number = number + 1;
+    //           }
+    //       })
+    //     : (number = number + 1);
+    data.email !== req.body.email && number === 0
+        ? await Admin.find({ email: req.body.email }, function (err, admin) {
+              if (err) return res.status(404).json({ message: err });
+              else if (admin && admin.length === 1) {
+                  return res.status(200).json({ message: 'Email đã được đăng ký !' });
+              } else {
+                  number = number + 1;
+              }
+          })
+        : (number = number + 1);
+    data.phone !== req.body.phone && number === 1
+        ? await Admin.find({ phone: req.body.phone }, function (err, admin) {
+              if (err) return res.status(404).json({ message: err });
+              else if (admin && admin.length === 1) {
+                  return res.status(200).json({ message: 'Phone đã được đăng ký !' });
+              } else {
+                  number = number + 1;
+              }
+          })
+        : (number = number + 1);
+    req.body.name && (data.name = req.body.name);
+    req.body.email && (data.email = req.body.email);
+    req.body.phone && (data.phone = req.body.phone);
+    req.body.gender && (data.gender = req.body.gender);
+    req.body.date_of_birth && (data['date_of_birth'] = req.body.date_of_birth);
+    req.body.address && (data.address = req.body.address);
+    req.body.avatar && (data.avatar = req.body.avatar);
+    req.body.status && (data.status = req.body.status);
+    req.body.position && (data.position = req.body.position);
+    req.body.password && (data.password = req.body.password);
+    number === 2 &&
+        data
+            .save()
+            .then((business) => {
+                res.json({ message: 'SUCCESS', admin: business });
+            })
+            .catch((err) => {
+                res.status(200).send({ message: 'Failed to update catalog' });
+            });
+}
 module.exports = {
     GET: async function (req, res) {
         await Admin.find(function (err, data) {
@@ -8,36 +59,49 @@ module.exports = {
             else {
                 const objectData = {};
                 data.map((item) => {
-                    objectData[item._id] = {
-                        _id: item.id,
-                        name: item.name,
-                        email: item.email,
-                        position: item.position,
-                        avatar: item.avatar,
-                        phone: item.phone,
-                        info: item.info,
-                        status: item.status,
-                    };
+                    objectData[item._id] = item;
                 });
                 return res.status(200).json(objectData);
             }
         });
     },
     POST: async function (req, res) {
-        await Admin.find({ email: req.body.email }, function (err, Admin) {
+        let number = 0;
+        await Admin.find({ name: req.body.name }, function (err, admin) {
             if (err) return res.status(404).json({ message: err });
-            else if (Admin.length === 1) {
-                return res.status(200).json({ message: 'Đã có tồn tại' });
+            else if (admin.length === 1) {
+                return res.status(200).json({ message: 'Tên đã được đăng ký !' });
+            } else {
+                number = number + 1;
             }
         });
-        return await Admin(req.body)
-            .save()
-            .then((admin) => {
-                res.json({ message: 'SUCCESS' });
-            })
-            .catch((err) => {
-                res.status(500).json({ message: err });
-            });
+        number === 1 &&
+            (await Admin.find({ email: req.body.email }, function (err, admin) {
+                if (err) return res.status(404).json({ message: err });
+                else if (admin.length === 1) {
+                    return res.status(200).json({ message: 'Email đã được đăng ký !' });
+                } else {
+                    number = number + 1;
+                }
+            }));
+        number === 2 &&
+            (await Admin.find({ phone: req.body.phone }, function (err, admin) {
+                if (err) return res.status(404).json({ message: err });
+                else if (admin.length === 1) {
+                    return res.status(200).json({ message: 'Số điện thoại đã được đăng ký !' });
+                } else {
+                    number = number + 1;
+                }
+            }));
+        number === 3 &&
+            Admin(req.body)
+                .save()
+                .then((admin) => {
+                    res.json({ message: 'SUCCESS', id: admin._id });
+                })
+                .catch((err) => {
+                    res.status(500).json({ message: err });
+                });
     },
     DELETE: async function (req, res) {
         await Admin.findByIdAndRemove({ _id: req.params.id }, function (err, catalog) {
@@ -52,24 +116,10 @@ module.exports = {
         });
     },
     UPDATE: async function (req, res) {
-        await Admin.findById(req.params.id, function (err, admin) {
-            if (!admin) res.status(404).send('data is not found');
+        await Admin.findById(req.params.id, function (err, Admin) {
+            if (!Admin) res.status(404).send('data is not found');
             else {
-                req.body.position && (admin.position = req.body.position);
-                req.body.status && (admin.status = req.body.status);
-                req.body.phone && (admin.phone = req.body.phone);
-                req.body.avatar && (admin.avatar = req.body.avatar);
-                req.body.email && (admin.email = req.body.email);
-                req.body.name && (admin.name = req.body.name);
-                req.body.password && (admin.password = req.body.password);
-                admin
-                    .save()
-                    .then((business) => {
-                        res.json({ message: 'SUCCESS' });
-                    })
-                    .catch((err) => {
-                        res.status(400).send({ message: 'Cập tài khoản thất bại !' });
-                    });
+                checkUpdate(req, res, Admin);
             }
         });
     },
@@ -98,13 +148,5 @@ module.exports = {
                 }
             });
         }
-        // await Admin.find({ email: req.body.email }, function (err, data) {
-        //     if (err) return res.status(405).json({ message: err });
-        //     else if (data.length === 1 && req.body.email === data[0].email && req.body.password === data[0].password) {
-        //         return res.status(200).json({ message: 'SUCCESS', data: data[0], id_admin: data[0]._id, email: data[0].email, password: data[0].password, avatar: data[0].avatar, name: data[0].name, position: data[0].position });
-        //     } else {
-        //         res.status(404).json({ message: 'Wrong password or account' });
-        //     }
-        // });
     },
 };

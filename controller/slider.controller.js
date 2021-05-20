@@ -36,7 +36,6 @@ module.exports = {
         await Slider.findById(req.params.id, function (err, Slider) {
             if (!Slider) res.status(404).send('data is not found');
             else {
-                console.log('update: ' + req);
                 Slider.name = req.body.name;
                 Slider.image_link = req.body.image_link;
                 Slider.index = req.body.index;

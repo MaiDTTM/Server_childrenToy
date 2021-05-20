@@ -1,7 +1,7 @@
 const express = require('express');
 
 // container
-const { GET, POST, DELETE, UPDATE, GET_ID, LOGIN } = require('../controller/transaction.controller');
+const { GET, POST, UPDATE, GET_ID } = require('../controller/transaction.controller');
 // const
 const transactionRouter = express.Router();
 transactionRouter.route('/api/transaction').get(GET).post(POST);

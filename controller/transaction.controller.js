@@ -25,11 +25,11 @@ const CheckUseOfAdmin = async (req, res, transaction) => {
         }
     });
     if (Object.keys(objectData).includes(req.body.user_id)) {
-        req.body.status_transaction && (transaction.status_transaction = req.body.status_transaction);
+        req.body.status && (transaction.status = req.body.status);
         transaction
             .save()
             .then((business) => {
-                res.status(200).json({ message: 'SUCCESS', transaction: business });
+                res.status(200).json({ message: 'SUCCESS', data: business });
             })
             .catch((err) => {
                 res.status(200).send({ message: 'Failed to update catalog' });
@@ -44,7 +44,7 @@ const CheckUseOfAdmin = async (req, res, transaction) => {
             transaction
                 .save()
                 .then((business) => {
-                    res.status(200).json({ message: 'SUCCESS', transaction: business });
+                    res.status(200).json({ message: 'SUCCESS', data: business });
                 })
                 .catch((err) => {
                     res.status(200).send({ message: 'Lỗi kết nối' });
@@ -108,7 +108,16 @@ module.exports = {
         await Transaction.findById(req.params.id, function (err, transaction) {
             if (!transaction) res.status(404).send('data is not found');
             else {
-                return CheckUseOfAdmin(req, res, transaction);
+                transaction.status_transaction = req.body.status_transaction;
+                transaction
+                    .save()
+                    .then((business) => {
+                        res.status(200).json({ message: 'SUCCESS', data: business });
+                    })
+                    .catch((err) => {
+                        res.status(200).send({ message: 'Lỗi kết nối' });
+                    });
+                // return CheckUseOfAdmin(req, res, transaction);
             }
         });
     },

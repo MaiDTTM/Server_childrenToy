@@ -1,9 +1,10 @@
 // model
 const Transaction = require('../model/transaction.model');
+const Cart = require('../model/cart.model');
 const Admin = require('../model/admin.model');
+
 const CheckUseOfAdmin = async (req, res, transaction) => {
     const objectData = {};
-
     await Admin.find(function (err, admin) {
         if (err) return res.status(404).json({ message: err });
         else {
@@ -55,7 +56,6 @@ const CheckUseOfAdmin = async (req, res, transaction) => {
 };
 module.exports = {
     GET: async function (req, res) {
-        console.log('req.query', req.query); // MongLV log fix bug
         if (req.query && Object.keys(req.query).length > 0) {
             await Transaction.find(req.query, function (err, data) {
                 console.log('data', data); // MongLV log fix bug
@@ -82,6 +82,13 @@ module.exports = {
         }
     },
     POST: async function (req, res) {
+        req.body.carts_id &&
+            req.body.carts_id.map(async (cartId) => {
+                await Cart.findById({ _id: cartId }, function (err, cart) {
+                    cart.status = true;
+                    cart.save();
+                });
+            });
         Transaction(req.body)
             .save()
             .then((transaction) => {

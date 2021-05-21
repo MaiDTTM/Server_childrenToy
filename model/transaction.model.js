@@ -32,6 +32,10 @@ let TransactionModel = new Schema(
             type: String,
             default: '',
         },
+        messageError: {
+            type: String,
+            default: '',
+        },
         // số điện thoại đặt hàng
         phone: {
             type: String,

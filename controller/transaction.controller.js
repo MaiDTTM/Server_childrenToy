@@ -109,6 +109,7 @@ module.exports = {
             if (!transaction) res.status(404).send('data is not found');
             else {
                 transaction.status_transaction = req.body.status_transaction;
+                req.body['messageError'] && (transaction.messageError = req.body.messageError);
                 transaction
                     .save()
                     .then((business) => {

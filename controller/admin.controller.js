@@ -2,16 +2,6 @@
 const Admin = require('../model/admin.model');
 async function checkUpdate(req, res, data) {
     let number = 0;
-    // data.name !== req.body.name
-    //     ? await Admin.find({ name: req.body.name }, function (err, admin) {
-    //           if (err) return res.status(404).json({ message: err });
-    //           else if (admin && admin.length === 1) {
-    //               return res.status(200).json({ message: 'Tên đã được đăng ký !' });
-    //           } else {
-    //               number = number + 1;
-    //           }
-    //       })
-    //     : (number = number + 1);
     data.email !== req.body.email && number === 0
         ? await Admin.find({ email: req.body.email }, function (err, admin) {
               if (err) return res.status(404).json({ message: err });
@@ -124,12 +114,12 @@ module.exports = {
         });
     },
     LOGIN: async function (req, res) {
-        const admin = req.body && req.body.admin;
+        const admin = req.body && req.body.userAdmin;
         if (admin.includes('@')) {
             await Admin.find({ email: admin }, function (err, data) {
                 if (err) return res.status(404).json({ message: err });
                 else if (data.length === 1 && admin === data[0].email && req.body.password === data[0].password) {
-                    return res.status(200).json({ message: 'SUCCESS', myUser: { ...data[0]._doc } });
+                    return res.status(200).json({ message: 'SUCCESS', Admin: { ...data[0]._doc } });
                 } else if (data.length > 0 && data[0].password && req.body.password !== data[0].password) {
                     res.status(200).json({ message: 'Mật khẩu sai !' });
                 } else {
@@ -140,7 +130,7 @@ module.exports = {
             await Admin.find({ phone: admin }, function (err, data) {
                 if (err) return res.status(404).json({ message: err });
                 else if (data.length === 1 && admin === data[0].phone && req.body.password === data[0].password) {
-                    return res.status(200).json({ message: 'SUCCESS', myUser: { ...data[0]._doc } });
+                    return res.status(200).json({ message: 'SUCCESS', Admin: { ...data[0]._doc } });
                 } else if (data.length > 0 && data[0].password && req.body.password !== data[0].password) {
                     res.status(200).json({ message: 'Sai mật khẩu!' });
                 } else {

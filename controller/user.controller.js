@@ -1,8 +1,6 @@
 // model
 const User = require('../model/user.model');
 async function checkUpdate(req, res, data) {
-    console.log('req.body.status', req.body.status); // MongLV log fix bug
-    console.log('req.body.password', req.body.password); // MongLV log fix bug
     let number = 0;
     data.name !== req.body.name
         ? await User.find({ name: req.body.name }, function (err, user) {

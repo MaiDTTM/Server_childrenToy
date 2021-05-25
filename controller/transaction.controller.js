@@ -58,7 +58,6 @@ module.exports = {
     GET: async function (req, res) {
         if (req.query && Object.keys(req.query).length > 0) {
             await Transaction.find(req.query, function (err, data) {
-                console.log('data', data); // MongLV log fix bug
                 if (err) return res.status(404).json({ message: err });
                 else {
                     const objectData = {};

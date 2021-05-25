@@ -6,8 +6,6 @@ module.exports = {
             url_compact: req.body.url_compact,
             url: req.body.url,
         };
-        console.log(data);
-
         await Url(data)
             .save()
             .then((url) => {
@@ -18,7 +16,6 @@ module.exports = {
             });
     },
     GET_URL: async function (req, res) {
-        console.log('req.params.id', req.params.id);
         await Url.find(function (err, data) {
             if (err) return res.status(404).json({ message: err });
             else {

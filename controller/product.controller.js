@@ -1,6 +1,6 @@
 // model
 const Product = require('../model/product.model');
-
+const excel = require('exceljs');
 module.exports = {
     GET: async function (req, res) {
         if (req.query && Object.keys(req.query).length > 0) {
@@ -124,4 +124,44 @@ module.exports = {
             }
         });
     },
+    // EXPORT: async function (req, res) {
+    //     await Product.find(function (err, data) {
+    //         if (err) return res.status(404).json({ message: err });
+    //         else {
+    //             let tutorials = [];
+    //             data.forEach((obj) => {
+    //                 tutorials.push({
+    //                     catalog_id: obj.catalog_id,
+    //                     name: obj.name,
+    //                     price: obj.price,
+    //                     amount: obj.amount,
+    //                     status: obj.status,
+    //                     description: obj.description,
+    //                     price_seo: obj.price_seo,
+    //                     sold: obj.sold,
+    //                     vote_user: obj.vote_user,
+    //                     update_created: obj.update_created,
+    //                     created: obj.created,
+    //                 });
+    //             });
+    //             let workbook = new excel.Workbook();
+    //             let worksheet = workbook.addWorksheet('Products');
+    //             worksheet.columns = [
+    //                 { header: 'Catalog', key: 'catalog_id', width: 5 },
+    //                 { header: 'Name', key: 'name', width: 25 },
+    //                 { header: 'Price', key: 'price', width: 25 },
+    //                 { header: 'Published', key: 'published', width: 10 },
+    //             ];
+    //             // Add Array Rows
+    //             worksheet.addRows(tutorials);
+    //
+    //             res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    //             res.setHeader('Content-Disposition', 'attachment; filename=' + 'Products.xlsx');
+    //
+    //             return workbook.xlsx.write(res).then(function () {
+    //                 res.status(200).end();
+    //             });
+    //         }
+    //     });
+    // },
 };

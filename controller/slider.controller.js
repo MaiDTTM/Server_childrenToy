@@ -10,7 +10,6 @@ module.exports = {
                 data.map((item) => {
                     objectData[item._id] = item;
                 });
-                console.log(objectData);
                 return res.status(200).json(objectData);
             }
         });

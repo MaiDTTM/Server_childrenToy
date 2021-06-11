@@ -11,10 +11,10 @@ let Catalog = new Schema(
             default: '',
         },
         // icon
-        icon : {
-            type : String,
-            required : true,
-            default :''
+        icon: {
+            type: String,
+            required: true,
+            default: '',
         },
         // mo ta
         description: {
@@ -26,7 +26,11 @@ let Catalog = new Schema(
             type: String,
             default: '-1',
         },
-        update_day : {
+        index: {
+            type: Number,
+            sequence_value: 0,
+        },
+        update_day: {
             type: Date,
             default: new Date().getTime(),
         },

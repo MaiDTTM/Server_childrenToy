@@ -48,6 +48,8 @@ module.exports = {
                     response.icon = req.body.icon;
                     response.description = req.body.description;
                     response.paramId = req.body.paramId;
+                    response.index = req.body.index;
+
                     return response
                         .save()
                         .then((business) => {

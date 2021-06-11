@@ -22,6 +22,5 @@ module.exports = {
                 return res.status(200).json(data[0]);
             }
         }).where({ url_compact: req.params.id });
-        // console.log('dataRes: ', dataRes);
     },
 };

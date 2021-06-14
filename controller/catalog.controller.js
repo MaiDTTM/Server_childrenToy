@@ -35,7 +35,24 @@ module.exports = {
     DELETE: async function (req, res) {
         await Catalog.findByIdAndRemove({ _id: req.params.id }, function (err, catalog) {
             if (err) res.json(err);
-            else res.json({ message: 'SUCCESS' });
+            else {
+                let dataCatalog = [];
+                Catalog.find({ paramId: catalog.paramId }, function (err, data) {
+                    if (err) return res.status(404).json({ message: err });
+                    dataCatalog = data;
+                    data.map((item, index) => {
+                        item.index = index + 1;
+                        item.save()
+                            .then((business) => {
+                                console.log('business:', business);
+                            })
+                            .catch((err) => {
+                                console.log('err:', err);
+                            });
+                    });
+                    return res.json({ message: 'SUCCESS' });
+                });
+            }
         });
     },
     UPDATE: async function (req, res) {
@@ -49,6 +66,7 @@ module.exports = {
                     response.description = req.body.description;
                     response.paramId = req.body.paramId;
                     response.index = req.body.index;
+                    response.status = req.body.status;
 
                     return response
                         .save()

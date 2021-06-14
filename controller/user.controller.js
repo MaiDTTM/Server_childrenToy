@@ -152,28 +152,38 @@ module.exports = {
     },
     PUT: async function (req, res) {
         await User.findById(req.params.id, function (err, user) {
+            console.log('user', user); // MongLV log fix bug
             if (!user) res.status(404).send('data is not found');
             else {
-                if (!req.body.password) {
-                    req.body.status && (user.status = req.body.status);
-                    user.save()
-                        .then((business) => {
-                            res.json({ message: 'SUCCESS', user: business });
-                        })
-                        .catch((err) => {
-                            res.status(400).send({ message: 'Cập tài khoản thất bại !' });
-                        });
-                } else {
-                    req.body.password && (user.password = req.body.password);
-                    req.body.status && (user.status = req.body.status);
-                    user.save()
-                        .then((business) => {
-                            res.json({ message: 'SUCCESS', user: business });
-                        })
-                        .catch((err) => {
-                            res.status(400).send({ message: 'Cập tài khoản thất bại !' });
-                        });
-                }
+                user.password = req.body.password;
+                user.status = req.body.status;
+                user.save()
+                    .then((business) => {
+                        res.json({ message: 'SUCCESS', user: business });
+                    })
+                    .catch((err) => {
+                        res.status(400).send({ err, message: 'Cập tài khoản thất bại !' });
+                    });
+                // if (!req.body.password && req.body.status) {
+                //     user.status = req.body.status;
+                //     user.save()
+                //         .then((business) => {
+                //             res.json({ message: 'SUCCESS', user: business });
+                //         })
+                //         .catch((err) => {
+                //             res.status(400).send({ message: 'Cập tài khoản thất bại !' });
+                //         });
+                // } else {
+                //     user.password = req.body.password;
+                //     user.status = req.body.status;
+                //     user.save()
+                //         .then((business) => {
+                //             res.json({ message: 'SUCCESS', user: business });
+                //         })
+                //         .catch((err) => {
+                //             res.status(400).send({ message: 'Cập tài khoản thất bại !' });
+                //         });
+                // }
             }
         });
     },

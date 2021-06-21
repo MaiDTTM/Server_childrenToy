@@ -1,6 +1,24 @@
 // model
 const Catalog = require('../model/catalog.model');
 
+async function _update(catalog, req, res) {
+    let dataCatalog;
+    dataCatalog = [];
+    await Catalog.find({ paramId: catalog.paramId }, async function (err, data) {
+        if (err) return res.status(404).json({ message: err });
+        dataCatalog = data;
+        await data.map(async (item, index) => {
+            item.index = index + 1;
+            await item
+                .save()
+                .then()
+                .catch((err) => {
+                    console.log('err:', err);
+                });
+        });
+        return res.json({ message: 'SUCCESS' });
+    });
+}
 module.exports = {
     GET: async function (req, res) {
         await Catalog.find(function (err, data) {
@@ -33,25 +51,17 @@ module.exports = {
         });
     },
     DELETE: async function (req, res) {
-        await Catalog.findByIdAndRemove({ _id: req.params.id }, function (err, catalog) {
+        await Catalog.findByIdAndRemove({ _id: req.params.id }, async function (err, catalog) {
             if (err) res.json(err);
             else {
-                let dataCatalog = [];
-                Catalog.find({ paramId: catalog.paramId }, function (err, data) {
-                    if (err) return res.status(404).json({ message: err });
-                    dataCatalog = data;
-                    data.map((item, index) => {
-                        item.index = index + 1;
-                        item.save()
-                            .then((business) => {
-                                console.log('business:', business);
-                            })
-                            .catch((err) => {
-                                console.log('err:', err);
-                            });
-                    });
+                try {
+                    if (catalog) {
+                        await _update(catalog, req, res);
+                    }
                     return res.json({ message: 'SUCCESS' });
-                });
+                } catch (err) {
+                    console.log('DELETE CATEGORY ERROR:', err);
+                }
             }
         });
     },

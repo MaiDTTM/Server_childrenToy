@@ -129,18 +129,22 @@ module.exports = {
         if (user.includes('@')) {
             await User.find({ email: user }, function (err, data) {
                 if (err) return res.status(404).json({ message: err });
-                else if (data.length === 1 && user === data[0].email && req.body.password === data[0].password) {
+                else if (!data[0].status) {
+                    return res.status(200).json({ message: 'Tài khoản của bạn đã bị khóa!' });
+                } else if (data.length === 1 && user === data[0].email && req.body.password === data[0].password) {
                     return res.status(200).json({ message: 'SUCCESS', myUser: { ...data[0]._doc } });
                 } else if (data.length > 0 && data[0].password && req.body.password !== data[0].password) {
-                    res.status(200).json({ message: 'Mật khẩu sai !' });
+                    return res.status(200).json({ message: 'Mật khẩu sai !' });
                 } else {
-                    res.status(200).json({ message: 'Tài khoản không đúng !' });
+                    return res.status(200).json({ message: 'Tài khoản không đúng !' });
                 }
             });
         } else {
             await User.find({ phone: user }, function (err, data) {
                 if (err) return res.status(404).json({ message: err });
-                else if (data.length === 1 && user === data[0].phone && req.body.password === data[0].password) {
+                else if (!data[0].status) {
+                    return res.status(200).json({ message: 'Tài khoản của bạn đã bị khóa!' });
+                } else if (data.length === 1 && user === data[0].phone && req.body.password === data[0].password) {
                     return res.status(200).json({ message: 'SUCCESS', myUser: { ...data[0]._doc } });
                 } else if (data.length > 0 && data[0].password && req.body.password !== data[0].password) {
                     res.status(200).json({ message: 'Sai mật khẩu!' });

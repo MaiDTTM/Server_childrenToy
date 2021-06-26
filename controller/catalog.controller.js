@@ -42,10 +42,10 @@ module.exports = {
                 return Catalog(req.body)
                     .save()
                     .then((catalog) => {
-                        res.status(200).json({ message: 'Thêm danh mục thành công!', data: catalog });
+                        return res.status(200).json({ message: 'Thêm danh mục thành công!', data: catalog });
                     })
                     .catch((err) => {
-                        res.status(404).json({ message: err });
+                        return res.status(404).json({ message: err });
                     });
             }
         });
@@ -81,10 +81,10 @@ module.exports = {
                     return response
                         .save()
                         .then((business) => {
-                            res.status(200).json({ message: 'Sửa thông tin sản phẩm thành công !' });
+                            return res.status(200).json({ message: 'Sửa thông tin sản phẩm thành công !' });
                         })
                         .catch((err) => {
-                            res.status(400).send({ message: 'Không cập nhật được sản phẩm' });
+                            return res.status(400).send({ message: 'Không cập nhật được sản phẩm' });
                         });
                 } else if (req.body.name !== response.name) {
                     Catalog.find({ name: req.body.name }, function (err, data) {
@@ -99,10 +99,10 @@ module.exports = {
                             return response
                                 .save()
                                 .then((business) => {
-                                    res.status(200).json({ message: 'Sửa thông tin sản phẩm thành công !' });
+                                    return res.status(200).json({ message: 'Sửa thông tin sản phẩm thành công !' });
                                 })
                                 .catch((err) => {
-                                    res.status(400).send({ message: 'Không cập nhật được sản phẩm' });
+                                    return res.status(400).send({ message: 'Không cập nhật được sản phẩm' });
                                 });
                         }
                     });

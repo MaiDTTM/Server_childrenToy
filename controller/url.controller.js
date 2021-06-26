@@ -9,10 +9,10 @@ module.exports = {
         await Url(data)
             .save()
             .then((url) => {
-                res.json({ message: 'SUCCESS' });
+                return res.json({ message: 'SUCCESS' });
             })
             .catch((err) => {
-                res.status(500).json({ message: 'error' });
+                return res.status(500).json({ message: 'error' });
             });
     },
     GET_URL: async function (req, res) {

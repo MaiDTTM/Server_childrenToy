@@ -29,10 +29,10 @@ const CheckUseOfAdmin = async (req, res, transaction) => {
         transaction
             .save()
             .then((business) => {
-                res.status(200).json({ message: 'SUCCESS', data: business });
+                return res.status(200).json({ message: 'SUCCESS', data: business });
             })
             .catch((err) => {
-                res.status(200).send({ message: 'Failed to update catalog' });
+                return res.status(200).send({ message: 'Failed to update catalog' });
             });
     } else {
         if ((req.body && req.body.status_transaction === 'Chờ xác nhận') || req.body.status_transaction === 'Đã hủy') {
@@ -44,13 +44,13 @@ const CheckUseOfAdmin = async (req, res, transaction) => {
             transaction
                 .save()
                 .then((business) => {
-                    res.status(200).json({ message: 'SUCCESS', data: business });
+                    return res.status(200).json({ message: 'SUCCESS', data: business });
                 })
                 .catch((err) => {
-                    res.status(200).send({ message: 'Lỗi kết nối' });
+                    return res.status(200).send({ message: 'Lỗi kết nối' });
                 });
         } else {
-            res.status(200).send({ message: 'Bạn không có quyền' });
+            return res.status(200).send({ message: 'Bạn không có quyền' });
         }
     }
 };

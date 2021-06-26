@@ -67,42 +67,46 @@ module.exports = {
         });
     },
     POST: async function (req, res) {
-        let number = 0;
-        await User.find({ name: req.body.name }, function (err, user) {
-            if (err) return res.status(404).json({ message: err });
-            else if (user.length === 1) {
-                return res.status(200).json({ message: 'Tên đã được đăng ký !' });
-            } else {
-                number = number + 1;
-            }
-        });
-        number === 1 &&
-            (await User.find({ email: req.body.email }, function (err, user) {
+        try {
+            let number = 0;
+            await User.find({ name: req.body.name }, function (err, user) {
                 if (err) return res.status(404).json({ message: err });
                 else if (user.length === 1) {
-                    return res.status(200).json({ message: 'Email đã được đăng ký !' });
+                    return res.status(200).json({ message: 'Tên đã được đăng ký !' });
                 } else {
                     number = number + 1;
                 }
-            }));
-        number === 2 &&
-            (await User.find({ phone: req.body.phone }, function (err, user) {
-                if (err) return res.status(404).json({ message: err });
-                else if (user.length === 1) {
-                    return res.status(200).json({ message: 'Số điện thoại đã được đăng ký !' });
-                } else {
-                    number = number + 1;
-                }
-            }));
-        number === 3 &&
-            User(req.body)
-                .save()
-                .then((User) => {
-                    res.json({ message: 'SUCCESS', user: User });
-                })
-                .catch((err) => {
-                    res.status(500).json({ message: err });
-                });
+            });
+            number === 1 &&
+                (await User.find({ email: req.body.email }, function (err, user) {
+                    if (err) return res.status(404).json({ message: err });
+                    else if (user.length === 1) {
+                        return res.status(200).json({ message: 'Email đã được đăng ký !' });
+                    } else {
+                        number = number + 1;
+                    }
+                }));
+            number === 2 &&
+                (await User.find({ phone: req.body.phone }, function (err, user) {
+                    if (err) return res.status(404).json({ message: err });
+                    else if (user.length === 1) {
+                        return res.status(200).json({ message: 'Số điện thoại đã được đăng ký !' });
+                    } else {
+                        number = number + 1;
+                    }
+                }));
+            number === 3 &&
+                User(req.body)
+                    .save()
+                    .then((User) => {
+                        return res.json({ message: 'SUCCESS', user: User });
+                    })
+                    .catch((err) => {
+                        return res.status(500).json({ message: err });
+                    });
+        } catch (err) {
+            console.log('POST_USER_ ERROR: ', err);
+        }
     },
     DELETE: async function (req, res) {
         await User.findByIdAndRemove({ _id: req.params.id }, function (err, catalog) {
@@ -116,6 +120,7 @@ module.exports = {
             else return res.status(200).json(User);
         });
     },
+
     UPDATE: async function (req, res) {
         await User.findById(req.params.id, function (err, User) {
             if (!User) res.status(404).send('data is not found');
@@ -124,6 +129,7 @@ module.exports = {
             }
         });
     },
+
     LOGIN: async function (req, res) {
         const user = req.body && req.body.user;
         if (user.includes('@')) {
@@ -156,17 +162,16 @@ module.exports = {
     },
     PUT: async function (req, res) {
         await User.findById(req.params.id, function (err, user) {
-            console.log('user', user); // MongLV log fix bug
             if (!user) res.status(404).send('data is not found');
             else {
                 user.password = req.body.password;
                 user.status = req.body.status;
                 user.save()
                     .then((business) => {
-                        res.json({ message: 'SUCCESS', user: business });
+                        return res.json({ message: 'SUCCESS', user: business });
                     })
                     .catch((err) => {
-                        res.status(400).send({ err, message: 'Cập tài khoản thất bại !' });
+                        return res.status(400).send({ err, message: 'Cập tài khoản thất bại !' });
                     });
                 // if (!req.body.password && req.body.status) {
                 //     user.status = req.body.status;

@@ -36,10 +36,10 @@ async function checkUpdate(req, res, data) {
         data
             .save()
             .then((business) => {
-                res.json({ message: 'SUCCESS', admin: business });
+                return res.json({ message: 'SUCCESS', admin: business });
             })
             .catch((err) => {
-                res.status(200).send({ message: 'Failed to update catalog' });
+                return res.status(200).send({ message: 'Failed to update catalog' });
             });
 }
 module.exports = {
@@ -87,16 +87,16 @@ module.exports = {
             Admin(req.body)
                 .save()
                 .then((admin) => {
-                    res.json({ message: 'SUCCESS', id: admin._id });
+                    return res.json({ message: 'SUCCESS', id: admin._id });
                 })
                 .catch((err) => {
-                    res.status(500).json({ message: err });
+                    return res.status(500).json({ message: err });
                 });
     },
     DELETE: async function (req, res) {
         await Admin.findByIdAndRemove({ _id: req.params.id }, function (err, catalog) {
-            if (err) res.json(err);
-            else res.json({ message: 'SUCCESS' });
+            if (err) return res.json(err);
+            else return res.json({ message: 'SUCCESS' });
         });
     },
     GET_ID: async function (req, res) {
@@ -107,7 +107,7 @@ module.exports = {
     },
     UPDATE: async function (req, res) {
         await Admin.findById(req.params.id, function (err, Admin) {
-            if (!Admin) res.status(404).send('data is not found');
+            if (!Admin) return res.status(404).send('data is not found');
             else {
                 checkUpdate(req, res, Admin);
             }
@@ -121,9 +121,9 @@ module.exports = {
                 else if (data.length === 1 && admin === data[0].email && req.body.password === data[0].password) {
                     return res.status(200).json({ message: 'SUCCESS', Admin: { ...data[0]._doc } });
                 } else if (data.length > 0 && data[0].password && req.body.password !== data[0].password) {
-                    res.status(200).json({ message: 'Mật khẩu sai !' });
+                    return res.status(200).json({ message: 'Mật khẩu sai !' });
                 } else {
-                    res.status(200).json({ message: 'Tài khoản không đúng !' });
+                    return res.status(200).json({ message: 'Tài khoản không đúng !' });
                 }
             });
         } else {
@@ -132,9 +132,9 @@ module.exports = {
                 else if (data.length === 1 && admin === data[0].phone && req.body.password === data[0].password) {
                     return res.status(200).json({ message: 'SUCCESS', Admin: { ...data[0]._doc } });
                 } else if (data.length > 0 && data[0].password && req.body.password !== data[0].password) {
-                    res.status(200).json({ message: 'Sai mật khẩu!' });
+                    return res.status(200).json({ message: 'Sai mật khẩu!' });
                 } else {
-                    res.status(200).json({ message: 'Tài khoản không đúng !' });
+                    return res.status(200).json({ message: 'Tài khoản không đúng !' });
                 }
             });
         }

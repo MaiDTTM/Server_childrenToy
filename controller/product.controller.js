@@ -48,18 +48,18 @@ module.exports = {
                 return Product(req.body)
                     .save()
                     .then((product) => {
-                        res.status(200).json({ message: 'Thêm sản phẩm thành công!', id: product._id });
+                        return res.status(200).json({ message: 'Thêm sản phẩm thành công!', id: product._id });
                     })
                     .catch((err) => {
-                        res.status(404).json({ message: err });
+                        return res.status(404).json({ message: err });
                     });
             }
         });
     },
     DELETE: async function (req, res) {
         await Product.findByIdAndRemove({ _id: req.params.id }, function (err, Product) {
-            if (err) res.json(err);
-            else res.json({ message: 'SUCCESS' });
+            if (err) return res.json(err);
+            else return res.json({ message: 'SUCCESS' });
         });
     },
     UPDATE: async function (req, res) {
@@ -85,10 +85,10 @@ module.exports = {
                     return response
                         .save()
                         .then((business) => {
-                            res.status(200).json({ message: 'Sửa thông tin sản phẩm thành công !' });
+                            return res.status(200).json({ message: 'Sửa thông tin sản phẩm thành công !' });
                         })
                         .catch((err) => {
-                            res.status(400).send({ message: 'Không cập nhật được sản phẩm' });
+                            return res.status(400).send({ message: 'Không cập nhật được sản phẩm' });
                         });
                 } else if (req.body.name !== response.name) {
                     Product.find({ name: req.body.name }, function (err, data) {
@@ -113,10 +113,10 @@ module.exports = {
                             return response
                                 .save()
                                 .then((business) => {
-                                    res.status(200).json({ message: 'Sửa thông tin sản phẩm thành công !' });
+                                    return res.status(200).json({ message: 'Sửa thông tin sản phẩm thành công !' });
                                 })
                                 .catch((err) => {
-                                    res.status(400).send({ message: 'Không cập nhật được sản phẩm' });
+                                    return res.status(400).send({ message: 'Không cập nhật được sản phẩm' });
                                 });
                         }
                     });

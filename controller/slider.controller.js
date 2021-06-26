@@ -41,10 +41,10 @@ module.exports = {
                 Slider.destination = req.body.destination;
                 Slider.save()
                     .then((business) => {
-                        res.json({ message: 'SUCCESS' });
+                        return res.json({ message: 'SUCCESS' });
                     })
                     .catch((err) => {
-                        res.status(400).send({ message: 'Failed to update Product' });
+                        return res.status(400).send({ message: 'Failed to update Product' });
                     });
             }
         });

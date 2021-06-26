@@ -40,7 +40,7 @@ module.exports = {
         });
     },
     POST: async function (req, res) {
-        await Cart.find({ product_id: req.body.product_id, status: false }, function (err, data) {
+        await Cart.find({ product_id: req.body.product_id, status: false, user_id: req.body.user_id }, function (err, data) {
             if (err) return res.status(404).json({ message: err });
             else if (data.length === 0) {
                 Cart(req.body)
@@ -51,7 +51,7 @@ module.exports = {
                     .catch((err) => {
                         res.status(200).json({ message: err });
                     });
-            } else res.json({ message: 'Đã tồn tại trong giỏ hàng' });
+            } else return res.json({ message: 'Đã tồn tại trong giỏ hàng', cart: data[0] });
         });
     },
     DELETE: async function (req, res) {

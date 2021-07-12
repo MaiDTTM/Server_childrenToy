@@ -31,7 +31,11 @@ async function checkUpdate(req, res, data) {
     req.body.avatar && (data.avatar = req.body.avatar);
     req.body.status && (data.status = req.body.status);
     req.body.position && (data.position = req.body.position);
-    req.body.password && (data.password = req.body.password);
+    // req.body.password === req.body['old_password'] && (data.password = req.body['new_password']);
+    if(req.body.password !== req.body['old_password']) return res.status(200).send({ message: 'Mật khẩu không đúng!' })
+    else {
+        (data.password = req.body['new_password']);
+    }
     number === 2 &&
         data
             .save()

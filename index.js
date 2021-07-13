@@ -16,6 +16,7 @@ const cartRouter = require('./router/cart.router');
 const uploadRouter = require('./router/upload.router');
 const urlRouter = require('./router/url.router');
 const transactionRouter = require('./router/transaction.router');
+const commentsRouter = require('./router/comments.router');
 
 // DATA
 const url_DBOnline = 'mongodb+srv://mongker:S211199@gmail.com@cluster0.tpvqz.gcp.mongodb.net/mybook?retryWrites=true&w=majority';
@@ -57,4 +58,5 @@ app.use(userRouter);
 app.use(cartRouter);
 app.use(urlRouter);
 app.use(transactionRouter);
+app.use(commentsRouter);
 app.use('/api/file', uploadRouter);

@@ -88,6 +88,7 @@ module.exports = {
                     cart.save();
                 });
             });
+        req.body.time_update = new Date().getTime();
         Transaction(req.body)
             .save()
             .then((transaction) => {
@@ -103,11 +104,79 @@ module.exports = {
             else return res.status(200).json(User);
         });
     },
+
+    // DOANH THU
+    GET_CHART: async function (req, res) {
+        await Transaction.find(function (err, transaction) {
+            if (err) return res.status(404).json({ message: err });
+            else {
+                const date = new Date();
+                const dateDay = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+                const dateMonth = new Date(date.getFullYear(), date.getMonth(), 1).getTime();
+                let revenueMoneyDay = 0;
+                let revenueMoneyMonth = 0;
+                let numberTransactionDay = 0;
+                let numberTransactionMonth = 0;
+                let listRevenueMonth = [];
+                let listDateMonth = [];
+                let listDatePrecious = [];
+                let listRevenuePrecious = [];
+                for (let i = 1; i <= 12; i++) {
+                    const dateMonthOfYear = new Date(date.getFullYear(), i, 1).getTime();
+                    listRevenueMonth.push({ x: `T ${i}`, y: 0 });
+                    listDateMonth.push(dateMonthOfYear);
+                }
+                for (let i = 1; i <= 4; i++) {
+                    let period;
+                    switch (i) {
+                        case 1:
+                            period = 1;
+                            break;
+                        case 2:
+                            period = 4;
+                            break;
+                        case 3:
+                            period = 7;
+                            break;
+                        default:
+                            period = 10;
+                        // code block
+                    }
+                    const datePreciousOfYear = new Date(date.getFullYear(), period, 1).getTime();
+                    listDatePrecious.push(datePreciousOfYear);
+                    listRevenuePrecious.push({ x: `Quý ${i}`, y: 0 });
+                }
+                transaction.map((item) => {
+                    item.time_update > dateDay && item.status_transaction === 'Đã giao' && (revenueMoneyDay = revenueMoneyDay + item.amount);
+                    item.time_update > dateMonth && item.status_transaction === 'Đã giao' && (revenueMoneyMonth = revenueMoneyMonth + item.amount);
+                    const createTimeStamp = new Date(item.created).getTime();
+                    createTimeStamp > dateDay && (numberTransactionDay = numberTransactionDay + 1);
+                    createTimeStamp > dateMonth && (numberTransactionMonth = numberTransactionMonth + 1);
+                    for (let i = 0; i < 12; i++) {
+                        createTimeStamp > listDateMonth[i] && createTimeStamp < listDateMonth[i + 1] && (listRevenueMonth[i + 1].y = listRevenueMonth[i + 1].y + 1);
+                    }
+                    for (let i = 0; i < 4; i++) {
+                        createTimeStamp > listDatePrecious[i] && createTimeStamp < listDatePrecious[i + 1] && (listRevenuePrecious[i].y = listRevenuePrecious[i].y + 1);
+                    }
+                    return item;
+                });
+                return res.status(200).json({
+                    revenueMoneyDay: revenueMoneyDay.toFixed(2), // Tổng doanh thu trong 1 ngày
+                    revenueMoneyMonth: revenueMoneyMonth.toFixed(2), // Tổng doanh thu trong 1 tháng
+                    numberTransactionDay, // số đơn hàng đã đặt trong ngày
+                    numberTransactionMonth, // Số đơn hàng đã đặt trong tháng
+                    listRevenueMonth,
+                    listRevenuePrecious,
+                });
+            }
+        });
+    },
     UPDATE: async function (req, res) {
         await Transaction.findById(req.params.id, function (err, transaction) {
             if (!transaction) res.status(404).send('data is not found');
             else {
                 transaction.status_transaction = req.body.status_transaction;
+                transaction.time_update = new Date().getTime();
                 req.body['messageError'] && (transaction.messageError = req.body.messageError);
                 transaction
                     .save()

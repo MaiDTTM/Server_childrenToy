@@ -53,6 +53,10 @@ let TransactionModel = new Schema(
             type: Number,
             default: 0,
         },
+        time_update: {
+            type: Number,
+            required: true,
+        },
         // trang thai don hang
         status_transaction: {
             type: String,

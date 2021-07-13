@@ -161,7 +161,7 @@ module.exports = {
                 });
             }
         } catch (err) {
-            console.log('err LOGIN', err); // MongLV log fix bug
+            console.log('err LOGIN', err);
         }
     },
     PUT: async function (req, res) {

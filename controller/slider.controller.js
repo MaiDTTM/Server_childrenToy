@@ -1,6 +1,20 @@
 // model
 const Slider = require('../model/slider.model');
-
+async function _update(catalog, req, res) {
+    await Slider.find({}, async function (err, data) {
+        if (err) return res.status(404).json({ message: err });
+        await data.map(async (item, index) => {
+            catalog.index < item.index && (item.index = index + 1);
+            await item
+                .save()
+                .then()
+                .catch((err) => {
+                    console.log('err:', err);
+                });
+        });
+        return res.json({ message: 'SUCCESS' });
+    });
+}
 module.exports = {
     GET: async function (req, res) {
         await Slider.find(function (err, data) {
@@ -26,9 +40,17 @@ module.exports = {
             });
     },
     DELETE: async function (req, res) {
-        await Slider.findByIdAndRemove({ _id: req.params.id }, function (err, Product) {
+        await Slider.findByIdAndRemove({ _id: req.params.id }, async function (err, Product) {
             if (err) res.json(err);
-            else res.json({ message: 'SUCCESS' });
+            else {
+                try {
+                    if (Product) {
+                        await _update(Product, req, res);
+                    }
+                } catch (err) {
+                    console.log('DELETE slider', err);
+                }
+            }
         });
     },
     UPDATE: async function (req, res) {

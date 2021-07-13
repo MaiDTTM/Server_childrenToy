@@ -32,10 +32,14 @@ async function checkUpdate(req, res, data) {
     req.body.status && (data.status = req.body.status);
     req.body.position && (data.position = req.body.position);
     // req.body.password === req.body['old_password'] && (data.password = req.body['new_password']);
-    if(req.body.password !== req.body['old_password']) return res.status(200).send({ message: 'Mật khẩu không đúng!' })
-    else {
-        (data.password = req.body['new_password']);
+    if (req.body['old_password'] && req.body['new_password'] && req.body['check_new_password']) {
+        if (req.body.password !== req.body['old_password']) {
+            return res.status(200).send({ message: 'Mật khẩu không đúng!' });
+        } else {
+            data.password = req.body['new_password'];
+        }
     }
+
     number === 2 &&
         data
             .save()
@@ -43,6 +47,7 @@ async function checkUpdate(req, res, data) {
                 return res.json({ message: 'SUCCESS', admin: business });
             })
             .catch((err) => {
+                console.log('err', err); // MongLV log fix bug
                 return res.status(200).send({ message: 'Failed to update catalog' });
             });
 }

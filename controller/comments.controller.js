@@ -3,7 +3,7 @@ const Comments = require('../model/comment.model');
 
 module.exports = {
     GET: async function (req, res) {
-        await Comments.find(function (err, data) {
+        await Comments.find({ id_product: req.query.id_product }, function (err, data) {
             if (err) return res.status(404).json({ message: err });
             else {
                 const objectData = {};
@@ -19,7 +19,7 @@ module.exports = {
             await Comments(req.body)
                 .save()
                 .then((data) => {
-                    res.json({ message: 'SUCCESS', id: data._id });
+                    res.json({ message: 'SUCCESS', data: data });
                 })
                 .catch((err) => {
                     res.status(500).json({ message: 'error' });

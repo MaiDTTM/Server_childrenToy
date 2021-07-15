@@ -25,7 +25,7 @@ module.exports = {
                     res.status(500).json({ message: 'error' });
                 });
         } catch (e) {
-            console.log('POST error:', e); // MongLV log fix bug
+            console.log('POST error:', e);
         }
     },
     DELETE: async function (req, res) {
@@ -35,7 +35,7 @@ module.exports = {
                 else res.json({ message: 'SUCCESS' });
             });
         } catch (e) {
-            console.log('POST error:', e); // MongLV log fix bug
+            console.log('POST error:', e);
         }
     },
 };

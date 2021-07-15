@@ -47,7 +47,6 @@ async function checkUpdate(req, res, data) {
                 return res.json({ message: 'SUCCESS', admin: business });
             })
             .catch((err) => {
-                console.log('err', err); // MongLV log fix bug
                 return res.status(200).send({ message: 'Failed to update catalog' });
             });
 }

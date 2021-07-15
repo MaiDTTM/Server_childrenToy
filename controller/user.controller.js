@@ -115,9 +115,7 @@ module.exports = {
         });
     },
     GET_ID: async function (req, res) {
-        console.log('req.params.id', req.params.id); // MongLV log fix bug
         await User.findById({ _id: req.params.id }, function (err, User) {
-            console.log('User', User); // MongLV log fix bug
             if (err) return res.status(404).json({ message: err });
             else return res.status(200).json(User);
         });

@@ -141,9 +141,9 @@ module.exports = {
                     } else if (data.length === 1 && user === data[0].email && req.body.password === data[0].password) {
                         return res.status(200).json({ message: 'SUCCESS', myUser: { ...data[0]._doc } });
                     } else if (data.length > 0 && data[0].password && req.body.password !== data[0].password) {
-                        return res.status(200).json({ message: 'Mật khẩu sai !' });
+                        return res.status(200).json({ message: 'Sai tài khoản hoặc mật khẩu!' });
                     } else {
-                        return res.status(200).json({ message: 'Tài khoản không đúng !' });
+                        return res.status(200).json({ message: 'Sai tài khoản hoặc mật khẩu!' });
                     }
                 });
             } else {
@@ -154,9 +154,9 @@ module.exports = {
                     } else if (data.length === 1 && user === data[0].phone && req.body.password === data[0].password) {
                         return res.status(200).json({ message: 'SUCCESS', myUser: { ...data[0]._doc } });
                     } else if (data.length > 0 && data[0].password && req.body.password !== data[0].password) {
-                        return res.status(200).json({ message: 'Sai mật khẩu!' });
+                        return res.status(200).json({ message: 'Sai tài khoản hoặc mật khẩu!' });
                     } else {
-                        return res.status(200).json({ message: 'Tài khoản không đúng !' });
+                        return res.status(200).json({ message: 'Sai tài khoản hoặc mật khẩu!' });
                     }
                 });
             }

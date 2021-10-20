@@ -1,5 +1,6 @@
 // model
 const User = require('../model/user.model');
+const md5 = require('md5');
 async function checkUpdate(req, res, data) {
     let number = 0;
     data.name !== req.body.name
@@ -40,6 +41,7 @@ async function checkUpdate(req, res, data) {
     req.body.address && (data.address = req.body.address);
     req.body.image && (data.image = req.body.image);
     req.body.status && (data.status = req.body.status);
+    // if (req.body.password && req.body['new_password'] && data.password === md5(req.body.password)) {
     if (req.body.password && req.body['new_password'] && data.password === req.body.password) {
         data.password = req.body['new_password'];
     } else if (req.body.password && req.body['new_password']) return res.status(200).send({ message: 'Mật khẩu sai !' });
@@ -139,6 +141,7 @@ module.exports = {
                     else if (data.length > 0 && !data[0].status) {
                         return res.status(200).json({ message: 'Tài khoản của bạn đã bị khóa!' });
                     } else if (data.length === 1 && user === data[0].email && req.body.password === data[0].password) {
+                        // } else if (data.length === 1 && user === data[0].email && req.body.password === md5(data[0].password)) {
                         return res.status(200).json({ message: 'SUCCESS', myUser: { ...data[0]._doc } });
                     } else if (data.length > 0 && data[0].password && req.body.password !== data[0].password) {
                         return res.status(200).json({ message: 'Sai tài khoản hoặc mật khẩu!' });

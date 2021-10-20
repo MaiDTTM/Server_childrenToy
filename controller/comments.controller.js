@@ -1,5 +1,6 @@
 // model
 const Comments = require('../model/comment.model');
+const Slider = require('../model/slider.model');
 
 module.exports = {
     GET: async function (req, res) {
@@ -37,5 +38,26 @@ module.exports = {
         } catch (e) {
             console.log('POST error:', e);
         }
+    },
+    PUT: async function (req, res) {
+        await Comments.findById(req.params.id, function (err, comment) {
+            if (!comment) res.status(404).send('data is not found');
+            else {
+                const findLike = comment.like_comment.indexOf(req.body.like_comment);
+                if (!req.body.like_comment) {
+                    return res.status(400).send({ message: 'Failed to update Product' });
+                } else {
+                    findLike === -1 ? comment.like_comment.push(req.body.like_comment) : comment.like_comment.splice(findLike, 1);
+                    comment
+                        .save()
+                        .then((data) => {
+                            return res.json({ message: 'SUCCESS', data });
+                        })
+                        .catch((err) => {
+                            return res.status(400).send({ message: 'Failed to update Product' });
+                        });
+                }
+            }
+        });
     },
 };

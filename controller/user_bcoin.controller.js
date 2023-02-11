@@ -80,24 +80,6 @@ module.exports = {
                 }
             });
             number === 1 &&
-                (await User.find({ email: req.body.email }, function (err, user) {
-                    if (err) return res.status(404).json({ message: err });
-                    else if (user.length === 1) {
-                        return res.status(200).json({ message: 'Email đã được đăng ký !' });
-                    } else {
-                        number = number + 1;
-                    }
-                }));
-            number === 2 &&
-                (await User.find({ phone: req.body.phone }, function (err, user) {
-                    if (err) return res.status(404).json({ message: err });
-                    else if (user.length === 1) {
-                        return res.status(200).json({ message: 'Số điện thoại đã được đăng ký !' });
-                    } else {
-                        number = number + 1;
-                    }
-                }));
-            number === 3 &&
                 User(req.body)
                     .save()
                     .then((User) => {

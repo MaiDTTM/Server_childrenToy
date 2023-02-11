@@ -1,0 +1,24 @@
+@urlDev=http://localhost:2111
+@name=transaction
+@vesion=v.0.0.0
+
+### GET_LIST
+GET {{urlDev}}/api/user_bcoin
+version: {{vesion}}
+
+### POST
+POST {{urlDev}}/api/user_bcoin
+Content-Type: application/json
+
+{
+    "name": "nampdb",
+    "password":"123456789",
+    "pritaveKey":"",
+    "publicKey":"",
+    "extends":""
+}
+
+### DELETE 
+DELETE {{urlDev}}/api/{{name}}/63c3ea05aa2c1e2b6815989e
+Content-Type: application/json
+version: {{vesion}}

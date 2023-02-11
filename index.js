@@ -17,6 +17,7 @@ const uploadRouter = require('./router/upload.router');
 const urlRouter = require('./router/url.router');
 const transactionRouter = require('./router/transaction.router');
 const commentsRouter = require('./router/comments.router');
+const userBcoinRouter = require('./router/use_bcoin.router');
 
 // DATA
 const url_DBOnline = 'mongodb+srv://mongker:S211199@gmail.com@cluster0.tpvqz.gcp.mongodb.net/mybook?retryWrites=true&w=majority';
@@ -50,6 +51,7 @@ app.listen(port, function () {
 });
 
 // Router
+app.use(userBcoinRouter);
 app.use(catalogRouter);
 app.use(productRouter);
 app.use(sliderRouter);

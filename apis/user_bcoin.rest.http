@@ -1,4 +1,4 @@
-@urlDev=http://localhost:2111
+@urlDev=http://localhost:1999
 @name=transaction
 @vesion=v.0.0.0
 
@@ -18,7 +18,33 @@ Content-Type: application/json
     "extends":""
 }
 
+### LOGIN
+POST {{urlDev}}/api/user_bcoin/login
+Content-Type: application/json
+
+{
+    "name": "nampdb",
+    "password":"123456789"
+}
+
 ### DELETE 
-DELETE {{urlDev}}/api/{{name}}/63c3ea05aa2c1e2b6815989e
+DELETE {{urlDev}}/api/user_bcoin/63e710a9bccce118841c5b49
 Content-Type: application/json
 version: {{vesion}}
+
+
+### POST
+POST {{urlDev}}/api/blockchain
+Content-Type: application/json
+
+{
+    "nonce": "1",
+    "hash":"1",
+    "previousHash":"2",
+    "transactions":"2",
+    "timestamp":"2"
+}
+
+### GET
+GET {{urlDev}}/api/blockchain
+Content-Type: application/json

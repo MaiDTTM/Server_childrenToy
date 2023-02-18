@@ -1,6 +1,10 @@
 // model
-const User = require('../model/user.model');
-const md5 = require('md5');
+const User = require('../model/user_bcoin.model');
+const EC = require('elliptic').ec;
+
+// You can use any elliptic curve you want
+const ec = new EC('secp256k1');
+
 async function checkUpdate(req, res, data) {
     let number = 0;
     data.name !== req.body.name
@@ -70,6 +74,7 @@ module.exports = {
     },
     POST: async function (req, res) {
         try {
+
             let number = 0;
             await User.find({ name: req.body.name }, function (err, user) {
                 if (err) return res.status(404).json({ message: err });
@@ -79,10 +84,22 @@ module.exports = {
                     number = number + 1;
                 }
             });
+
+            // Tạo một cặp khóa mới và chuyển đổi chúng thành chuỗi hex
+            const key = ec.genKeyPair('');
+            const publicKey = key.getPublic('hex');
+            const privateKey = key.getPrivate('hex');
+            const data = {
+                ...req.body,
+                publicKey,
+                privateKey,
+            };
+            console.log('data: ', data);
             number === 1 &&
-                User(req.body)
+                User(data)
                     .save()
                     .then((User) => {
+                        console.log('User: ', User);
                         return res.json({ message: 'SUCCESS', user: User });
                     })
                     .catch((err) => {
@@ -116,45 +133,27 @@ module.exports = {
 
     LOGIN: async function (req, res) {
         try {
-            const user = req.body && req.body.user;
-            if (typeof user === 'string' && user.includes('@')) {
-                await User.find({ email: user }, function (err, data) {
-                    if (err) return res.status(404).json({ message: err });
-                    else if (data.length > 0 && !data[0].status) {
-                        return res.status(200).json({ message: 'Tài khoản của bạn đã bị khóa!' });
-                    } else if (data.length === 1 && user === data[0].email && req.body.password === data[0].password) {
-                        // } else if (data.length === 1 && user === data[0].email && req.body.password === md5(data[0].password)) {
-                        return res.status(200).json({ message: 'SUCCESS', myUser: { ...data[0]._doc } });
-                    } else if (data.length > 0 && data[0].password && req.body.password !== data[0].password) {
-                        return res.status(200).json({ message: 'Sai tài khoản hoặc mật khẩu!' });
-                    } else {
-                        return res.status(200).json({ message: 'Sai tài khoản hoặc mật khẩu!' });
-                    }
-                });
-            } else {
-                await User.find({ phone: user }, function (err, data) {
-                    if (err) return res.status(404).json({ message: err });
-                    else if (data.length > 0 && !data[0].status) {
-                        return res.status(200).json({ message: 'Tài khoản của bạn đã bị khóa!' });
-                    } else if (data.length === 1 && user === data[0].phone && req.body.password === data[0].password) {
-                        return res.status(200).json({ message: 'SUCCESS', myUser: { ...data[0]._doc } });
-                    } else if (data.length > 0 && data[0].password && req.body.password !== data[0].password) {
-                        return res.status(200).json({ message: 'Sai tài khoản hoặc mật khẩu!' });
-                    } else {
-                        return res.status(200).json({ message: 'Sai tài khoản hoặc mật khẩu!' });
-                    }
-                });
-            }
+            const name = req.body && req.body.name;
+            await User.find({ name: name }, function (err, data) {
+                if (err) return res.status(404).json({ message: err });
+                if (data.length === 1 && name === data[0].name && req.body.password === data[0].password) {
+                    return res.status(200).json({ message: 'SUCCESS', user: { ...data[0]._doc } });
+                } else if (data.length > 0 && data[0].password && req.body.password !== data[0].password) {
+                    return res.status(200).json({ message: 'Sai tài khoản hoặc mật khẩu!' });
+                } else {
+                    return res.status(200).json({ message: 'Người dùng chưa tồn tại' });
+                }
+            });
         } catch (err) {
             console.log('err LOGIN', err);
         }
     },
+
     PUT: async function (req, res) {
         await User.findById(req.params.id, function (err, user) {
             if (!user) res.status(404).send('data is not found');
             else {
                 user.password = req.body.password;
-                user.status = req.body.status;
                 user.save()
                     .then((business) => {
                         return res.json({ message: 'SUCCESS', user: business });
@@ -162,26 +161,6 @@ module.exports = {
                     .catch((err) => {
                         return res.status(400).send({ err, message: 'Cập tài khoản thất bại !' });
                     });
-                // if (!req.body.password && req.body.status) {
-                //     user.status = req.body.status;
-                //     user.save()
-                //         .then((business) => {
-                //             res.json({ message: 'SUCCESS', user: business });
-                //         })
-                //         .catch((err) => {
-                //             res.status(400).send({ message: 'Cập tài khoản thất bại !' });
-                //         });
-                // } else {
-                //     user.password = req.body.password;
-                //     user.status = req.body.status;
-                //     user.save()
-                //         .then((business) => {
-                //             res.json({ message: 'SUCCESS', user: business });
-                //         })
-                //         .catch((err) => {
-                //             res.status(400).send({ message: 'Cập tài khoản thất bại !' });
-                //         });
-                // }
             }
         });
     },

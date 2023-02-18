@@ -12,23 +12,19 @@ let UserCoin = new Schema(
         },
         password: {
             type: String,
-            required: true,
             default: '',
         },
-        pritaveKey: {
+        privateKey: {
             type: String,
-            required: true,
             default: '',
         },
         publicKey: {
             type: String,
-            required: true,
             default: '',
         },
         extends: {
             type: String,
-            required: true,
-            default: '',
+            default: '{}',
         },
         created: {
             type: Date,

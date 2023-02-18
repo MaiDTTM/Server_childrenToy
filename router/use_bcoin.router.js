@@ -1,5 +1,5 @@
 const express = require('express');
-const { PUT } = require('../controller/user.controller');
+const { PUT } = require('../controller/user_bcoin.controller');
 const UserRouter = express.Router();
 
 // container
